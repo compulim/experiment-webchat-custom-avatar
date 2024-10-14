@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import './WebChat.css';
 
-import { Components, createStore } from 'botframework-webchat';
-import { memo, useEffect, useMemo, useState } from 'react';
+import { Components, createStore, StyleOptions } from 'botframework-webchat';
 import { type WebChatActivity } from 'botframework-webchat-core';
+import { memo, useEffect, useMemo, useState } from 'react';
 
 import createDirectLineEmulator from '../util/createDirectLineEmulator';
+import RenderAvatar from './RenderAvatar';
 
 const { BasicWebChat, Composer } = Components;
 
@@ -26,7 +28,20 @@ export default memo(function Chat({ activities }: Props) {
 
   const { directLine } = useMemo(() => createDirectLineEmulator({ store }), [store]);
 
+  const avatarMiddleware: any =
+    () =>
+    () =>
+    // ({ activity, fromUser, ...otherArgs }: any) => {
+    ({ activity }: any) => {
+      console.log('Avatar Middleware - activity ' + JSON.stringify(activity));
+
+      return () => <RenderAvatar activity={activity} />;
+    };
+
+  const styleOptions = useMemo<StyleOptions>(() => ({ botAvatarInitials: 'B' }), []);
+
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     activities && ready && activities.forEach(activity => directLine.emulateIncomingActivity(activity));
   }, [activities, directLine, ready]);
 
@@ -54,7 +69,7 @@ export default memo(function Chat({ activities }: Props) {
 
   return (
     <div className="chat">
-      <Composer directLine={directLine} store={store}>
+      <Composer avatarMiddleware={avatarMiddleware} directLine={directLine} store={store} styleOptions={styleOptions}>
         <BasicWebChat />
       </Composer>
     </div>
