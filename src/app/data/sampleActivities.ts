@@ -5,6 +5,9 @@ export default [
     timestamp: '2024-10-07T01:03:34.1486521Z',
     channelId: 'directline',
     from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+    // channelData: {
+    //   activityOrigin: 'GenerativeContentSkill'
+    // },
     conversation: { id: 'c-00001' },
     textFormat: 'markdown',
     membersAdded: [],
